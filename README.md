@@ -11,6 +11,7 @@
 [![License](https://img.shields.io/badge/license-Proprietary-94a3b8?style=flat-square)](#)
 [![Platform](https://img.shields.io/badge/platform-Chrome%20%7C%20Edge%20%7C%20Brave-f59e0b?style=flat-square)](#)
 
+[⬇️ ダウンロード](https://ohatwikeeper.com/extensions/oneclick_add/) ・
 [公式サイト](https://ohatwikeeper.com) ・
 [ダッシュボード](https://ohatwikeeper.com/dashboard) ・
 [API ドキュメント](https://ohatwikeeper.com/api-docs) ・
@@ -175,7 +176,27 @@ Get-FileHash .\ohatwikeeper_v2.0.zip -Algorithm SHA256
 
 ---
 
-## 🚀 インストール（開発者向け / 未パッケージ版）
+## ⬇️ Install
+
+公式ストアからのインストールを推奨します。
+
+<div align="center">
+
+[![Chrome ウェブストアで入手](https://img.shields.io/badge/Chrome-ウェブストアで入手-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/aflgkhadffoploabchfeaakdkaggchig?utm_source=item-share-cb)
+[![Firefox Add-onsで入手](https://img.shields.io/badge/Firefox-Add--onsで入手-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white)](https://addons.mozilla.org/ja/firefox/addon/%E3%81%8A%E3%81%AF%E3%83%84%E3%82%A4keeper_extension/)
+
+[📖 ダウンロードページ・インストール方法はこちら](https://ohatwikeeper.com/extensions/oneclick_add/)
+
+</div>
+
+| ブラウザ | 入手先 |
+|---|---|
+| 🌐 Chrome / Edge / Brave 等 | [Chrome ウェブストア](https://chromewebstore.google.com/detail/aflgkhadffoploabchfeaakdkaggchig?utm_source=item-share-cb) |
+| 🦊 Firefox | [Firefox Add-ons](https://addons.mozilla.org/ja/firefox/addon/%E3%81%8A%E3%81%AF%E3%83%84%E3%82%A4keeper_extension/) |
+
+---
+
+## 🚀 ソースから手動インストール（開発者向け / 未パッケージ版）
 
 1. このフォルダ（`2.0/`）をダウンロードまたは clone
 2. Chrome で `chrome://extensions` を開く
