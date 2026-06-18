@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>おはツイKeeper</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+    --bg:#101418;--bg-med:#1a2026;--bg-light:#2c343c;
+    --border:#38414a;--text:#e2e8f0;--muted:#94a3b8;
+    --accent:#38bdf8;--accent-hover:#0ea5e9;
+    --success:#22c55e;--warning:#f59e0b;--danger:#ef4444;
+    --gold:#f59e0b;
+}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+    width:360px;background:var(--bg);color:var(--text);
+    font-size:13px;overflow:hidden;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Header */
+.header{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 14px;
+    background:var(--bg-med);border-bottom:1px solid var(--border);
+}
+.logo{font-size:22px;line-height:1}
+.header-title{font-weight:800;font-size:14px;color:var(--text);line-height:1.2}
+.header-sub{font-size:11px;color:var(--muted)}
+.header-user{margin-left:auto;display:flex;align-items:center;gap:8px;cursor:pointer}
+.header-avatar{width:28px;height:28px;border-radius:50%;background:var(--bg-light);object-fit:cover;border:1px solid var(--border)}
+.header-name{font-size:11px;color:var(--muted);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Stats bar */
+.stats-bar{
+    display:flex;gap:0;
+    background:var(--bg-med);border-bottom:1px solid var(--border);
+}
+.stat-item{
+    flex:1;text-align:center;padding:8px 4px;
+    border-right:1px solid var(--border);
+    transition:background .15s;
+}
+.stat-item:last-child{border-right:none}
+.stat-val{font-size:16px;font-weight:700;color:var(--accent);line-height:1.2}
+.stat-val.gold{color:var(--gold)}
+.stat-val.success{color:var(--success)}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* Main */
+.main{padding:14px}
+
+/* Tweet card */
+.tweet-card{
+    background:var(--bg-med);border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;margin-bottom:12px;
+}
+.tweet-header{padding:10px 12px 8px;display:flex;align-items:center;gap:8px}
+.tweet-site-icon{font-size:16px;opacity:.7}
+.tweet-url{font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.tweet-status-badge{
+    font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;
+}
+.badge-registered{background:rgba(34,197,94,.15);color:var(--success);border:1px solid rgba(34,197,94,.3)}
+.badge-unregistered{background:rgba(56,189,248,.12);color:var(--accent);border:1px solid rgba(56,189,248,.3)}
+
+.tweet-body{padding:0 12px 10px;font-size:12px;color:var(--text);line-height:1.5;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.tweet-meta{
+    padding:8px 12px;background:var(--bg-light);
+    display:flex;gap:12px;font-size:11px;color:var(--muted);
+    border-top:1px solid var(--border);
+}
+.tweet-meta span{display:flex;align-items:center;gap:4px}
+
+/* Buttons */
+.btn{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    width:100%;padding:10px;border-radius:10px;
+    font-weight:700;font-size:13px;cursor:pointer;
+    border:none;transition:all .15s;
+}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--border)}
+.btn-danger:hover{background:rgba(239,68,68,.1);border-color:var(--danger)}
+.btn-secondary{background:var(--bg-light);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+
+.btn-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+
+/* State screens */
+.state-screen{
+    text-align:center;padding:20px 14px;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.state-icon{font-size:36px;line-height:1}
+.state-title{font-size:14px;font-weight:700}
+.state-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* Success animation */
+@keyframes pop{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .25s ease-out}
+
+/* Nav */
+.nav-bar{
+    display:flex;border-top:1px solid var(--border);
+    background:var(--bg-med);
+}
+.nav-btn{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:8px 4px;border:none;background:transparent;
+    color:var(--muted);cursor:pointer;font-size:9px;font-weight:600;
+    transition:color .15s;border-right:1px solid var(--border);
+}
+.nav-btn:last-child{border-right:none}
+.nav-btn:hover{color:var(--accent)}
+.nav-btn .icon{font-size:16px}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;padding:20px;gap:8px;color:var(--muted)}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Info row */
+.info-row{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--bg-light);border-radius:8px;font-size:11px;color:var(--muted);margin-bottom:12px}
+.info-row a{font-size:11px}
+
+/* Registered detail */
+.reg-detail{padding:10px 12px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+
+/* Not on tweet */
+.not-tweet{padding:16px 14px}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="logo">☀️</div>
+    <div>
+        <div class="header-title">おはツイKeeper</div>
+        <div class="header-sub">ワンクリック登録</div>
+    </div>
+    <div class="header-user" id="header-user" title="マイページを開く">
+        <img class="header-avatar" id="header-avatar" src="" alt="" style="display:none">
+        <span class="header-name" id="header-name"></span>
+    </div>
+</div>
+
+<!-- Stats bar -->
+<div class="stats-bar" id="stats-bar" style="display:none">
+    <div class="stat-item">
+        <div class="stat-val" id="s-streak">—</div>
+        <div class="stat-lbl">🔥 連続日数</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-val" id="s-total">—</div>
+        <div class="stat-lbl">📅 総投稿数</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-val" id="s-likes">—</div>
+        <div class="stat-lbl">💖 総いいね</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-val" id="s-today">—</div>
+        <div class="stat-lbl">今日の状況</div>
+    </div>
+</div>
+
+<!-- Main content -->
+<div id="main-content">
+    <div class="loading"><div class="spinner"></div>読み込み中...</div>
+</div>
+
+<!-- Nav bar -->
+<div class="nav-bar">
+    <button class="nav-btn" id="nav-dashboard"><span class="icon">📊</span>ダッシュボード</button>
+    <button class="nav-btn" id="nav-ranking"><span class="icon">🏆</span>ランキング</button>
+    <button class="nav-btn" id="nav-today"><span class="icon">⭐</span>今日</button>
+    <button class="nav-btn" id="nav-settings"><span class="icon">⚙️</span>設定</button>
+</div>
+
+<script src="constants.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

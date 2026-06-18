@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>設定 | おはツイKeeper Extension</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+    --bg:#101418;--bg-med:#1a2026;--bg-light:#2c343c;
+    --border:#38414a;--text:#e2e8f0;--muted:#94a3b8;
+    --accent:#38bdf8;--accent-hover:#0ea5e9;
+    --success:#22c55e;--danger:#ef4444;--gold:#f59e0b;
+}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+    background:var(--bg);color:var(--text);
+    min-height:100vh;padding:0;
+}
+
+/* Layout */
+.layout{display:flex;min-height:100vh;width:100%}
+.sidebar{
+    width:220px;flex-shrink:0;
+    background:var(--bg-med);border-right:1px solid var(--border);
+    padding:20px 0;
+}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sidebar-logo .icon{font-size:28px}
+.sidebar-logo .title{font-weight:800;font-size:15px}
+.sidebar-logo .ver{font-size:11px;color:var(--muted)}
+.nav-item{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 20px;cursor:pointer;
+    color:var(--muted);font-size:13px;font-weight:600;
+    border-left:3px solid transparent;transition:all .15s;
+}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(56,189,248,.06)}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+
+.content{flex:1;padding:28px 32px;overflow-y:auto}
+.page{display:none}
+.page.active{display:block}
+
+h1{font-size:20px;font-weight:800;margin-bottom:6px}
+.page-desc{font-size:13px;color:var(--muted);margin-bottom:24px}
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0}
+
+/* Card */
+.card{background:var(--bg-med);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .icon{font-size:18px}
+
+/* Form */
+.form-group{margin-bottom:16px}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.input-row{display:flex;gap:8px}
+input[type="text"],input[type="password"]{
+    flex:1;padding:10px 12px;
+    border:1px solid var(--border);border-radius:10px;
+    background:var(--bg-light);color:var(--text);
+    font-size:13px;font-family:monospace;
+    transition:border-color .15s;
+}
+input:focus{outline:none;border-color:var(--accent)}
+
+/* Buttons */
+.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:10px 18px;border-radius:10px;
+    font-weight:700;font-size:13px;cursor:pointer;border:none;
+    transition:all .15s;
+}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-secondary{background:var(--bg-light);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+.btn-sm{padding:8px 14px;font-size:12px}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--border)}
+.btn-danger:hover{border-color:var(--danger);background:rgba(239,68,68,.08)}
+
+/* Status messages */
+.msg{font-size:12px;padding:8px 12px;border-radius:8px;margin-top:8px}
+.msg-success{background:rgba(34,197,94,.12);color:var(--success);border:1px solid rgba(34,197,94,.3)}
+.msg-error{background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.3)}
+.msg-info{background:rgba(56,189,248,.12);color:var(--accent);border:1px solid rgba(56,189,248,.3)}
+
+/* Profile card */
+.profile-card{
+    display:flex;align-items:center;gap:14px;
+    padding:14px;background:var(--bg-light);
+    border-radius:10px;margin-bottom:14px;border:1px solid var(--border);
+}
+.profile-avatar{width:48px;height:48px;border-radius:50%;background:var(--bg-med);object-fit:cover}
+.profile-name{font-weight:700;font-size:14px}
+.profile-handle{font-size:12px;color:var(--muted)}
+.profile-badge{font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);margin-top:4px;display:inline-block}
+
+/* Stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat-card{text-align:center;padding:12px;background:var(--bg-light);border-radius:10px;border:1px solid var(--border)}
+.stat-card .val{font-size:20px;font-weight:800;color:var(--accent);line-height:1.2}
+.stat-card .val.gold{color:var(--gold)}
+.stat-card .val.green{color:var(--success)}
+.stat-card .lbl{font-size:10px;color:var(--muted);margin-top:3px}
+
+/* Links */
+.link-list{display:flex;flex-direction:column;gap:8px}
+.link-item{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 14px;background:var(--bg-light);
+    border-radius:10px;border:1px solid var(--border);
+    cursor:pointer;transition:background .15s;color:var(--text);text-decoration:none;
+    font-size:13px;font-weight:600;
+}
+.link-item:hover{background:var(--border)}
+.link-item .icon{font-size:18px;width:24px;text-align:center}
+.link-item .arrow{margin-left:auto;color:var(--muted)}
+
+/* Spinner */
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <span class="icon">☀️</span>
+            <div>
+                <div class="title">おはツイKeeper</div>
+                <div class="ver">Extension v2.0</div>
+            </div>
+        </div>
+        <div class="nav-item active" data-page="page-api">
+            <span class="icon">🔑</span> APIキー設定
+        </div>
+        <div class="nav-item" data-page="page-profile">
+            <span class="icon">👤</span> プロフィール・統計
+        </div>
+        <div class="nav-item" data-page="page-links">
+            <span class="icon">🔗</span> クイックリンク
+        </div>
+        <div class="nav-item" data-page="page-about">
+            <span class="icon">ℹ️</span> このExtensionについて
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="content">
+
+        <!-- APIキー設定 -->
+        <div class="page active" id="page-api">
+            <h1>🔑 APIキー設定</h1>
+            <p class="page-desc">ダッシュボードで発行したAPIキーを登録します。</p>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">🗝️</span>APIキー</div>
+                <div class="form-group">
+                    <label>API KEY</label>
+                    <div class="input-row">
+                        <input type="password" id="api-key-input" placeholder="APIキーを貼り付け...">
+                        <button class="btn btn-secondary btn-sm" id="toggle-key">👁</button>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-primary" id="save-btn">💾 保存する</button>
+                    <button class="btn btn-secondary" id="verify-btn">✅ 検証する</button>
+                </div>
+                <div id="api-msg"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">❓</span>APIキーの取得方法</div>
+                <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px">
+                    1. <a href="https://ohatwikeeper.com/dashboard" target="_blank">おはツイKeeperのダッシュボード</a> を開く<br>
+                    2. 画面下部の「API」セクションでキーを発行<br>
+                    3. 発行されたキーをコピーして上のフォームに貼り付け
+                </p>
+                <button class="btn btn-secondary btn-sm" id="open-dashboard-btn">🚀 ダッシュボードを開く</button>
+            </div>
+        </div>
+
+        <!-- プロフィール・統計 -->
+        <div class="page" id="page-profile">
+            <h1>👤 プロフィール・統計</h1>
+            <p class="page-desc">現在のAPIキーに紐付いたアカウント情報です。</p>
+            <div id="profile-content">
+                <div class="card" style="text-align:center;color:var(--muted);padding:30px">
+                    APIキーを設定後、ここにプロフィールが表示されます。
+                </div>
+            </div>
+        </div>
+
+        <!-- クイックリンク -->
+        <div class="page" id="page-links">
+            <h1>🔗 クイックリンク</h1>
+            <p class="page-desc">よく使うページへのリンクです。</p>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">マイページ</div>
+            <div class="link-list" style="margin-bottom:16px">
+                <a class="link-item" data-url="https://ohatwikeeper.com/dashboard"><span class="icon">📊</span> ダッシュボード <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/settings"><span class="icon">⚙️</span> 設定 <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/settings_email"><span class="icon">📧</span> メール設定 <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/notification"><span class="icon">🔔</span> 通知 <span class="arrow">›</span></a>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">サービス</div>
+            <div class="link-list" style="margin-bottom:16px">
+                <a class="link-item" data-url="https://ohatwikeeper.com/ranking"><span class="icon">🏆</span> ランキング <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/ranking/today"><span class="icon">⭐</span> 今日のランキング <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/search"><span class="icon">🔍</span> 検索 <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/survey"><span class="icon">📋</span> アンケート <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/diff"><span class="icon">⚖️</span> ユーザー比較 <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://timeline.ohatwikeeper.com/"><span class="icon">📅</span> おはツイTimeline <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://profilecard.ohatwikeeper.com/"><span class="icon">🪪</span> プロフィールカード <span class="arrow">›</span></a>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">サポート・情報</div>
+            <div class="link-list">
+                <a class="link-item" data-url="https://ohatwikeeper.com/howtouse"><span class="icon">📖</span> 使い方 <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/patchnote"><span class="icon">📝</span> パッチノート <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/api-docs"><span class="icon">📄</span> API ドキュメント <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://ohatwikeeper.com/policy"><span class="icon">🔒</span> プライバシーポリシー <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://discord.ohatwikeeper.com"><span class="icon">💬</span> お問い合わせ (Discord) <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://question.ohatwikeeper.com"><span class="icon">❓</span> 質問箱 <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://twitter.ohatwikeeper.com"><span class="icon">𝕏</span> 公式X <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://vrc.ohatwikeeper.com"><span class="icon">🌐</span> VRChatグループ <span class="arrow">›</span></a>
+                <a class="link-item" data-url="https://status.ohatwikeeper.com"><span class="icon">📡</span> サービス稼働状況 <span class="arrow">›</span></a>
+            </div>
+        </div>
+
+        <!-- About -->
+        <div class="page" id="page-about">
+            <h1>ℹ️ このExtensionについて</h1>
+            <p class="page-desc">おはツイKeeper Chrome Extension v2.0</p>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">✨</span>主な機能</div>
+                <ul style="font-size:13px;color:var(--muted);line-height:2;padding-left:16px">
+                    <li>X(Twitter)の投稿をワンクリックでおはツイ登録</li>
+                    <li>登録済みかどうかの自動確認</li>
+                    <li>連続投稿日数・統計をポップアップで表示</li>
+                    <li>登録解除もポップアップから操作可能</li>
+                    <li>API v2 対応</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">🔗</span>リンク</div>
+                <div class="link-list">
+                    <a class="link-item" data-url="https://ohatwikeeper.com"><span class="icon">🌐</span> おはツイKeeper公式サイト <span class="arrow">›</span></a>
+                    <a class="link-item" data-url="https://twitter.ohatwikeeper.com"><span class="icon">𝕏</span> 公式X (@ohatwikeeper) <span class="arrow">›</span></a>
+                    <a class="link-item" data-url="https://discord.ohatwikeeper.com"><span class="icon">💬</span> お問い合わせ (Discord) <span class="arrow">›</span></a>
+                    <a class="link-item" data-url="https://question.ohatwikeeper.com"><span class="icon">❓</span> 質問箱 <span class="arrow">›</span></a>
+                    <a class="link-item" data-url="https://vrc.ohatwikeeper.com"><span class="icon">🌐</span> VRChatグループ <span class="arrow">›</span></a>
+                    <a class="link-item" data-url="https://status.ohatwikeeper.com"><span class="icon">📡</span> サービス稼働状況 <span class="arrow">›</span></a>
+                    <a class="link-item" data-url="https://ohatwikeeper.com/patchnote"><span class="icon">📝</span> パッチノート <span class="arrow">›</span></a>
+                    <a class="link-item" data-url="https://ohatwikeeper.com/policy"><span class="icon">🔒</span> プライバシーポリシー <span class="arrow">›</span></a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+<script src="constants.js"></script>
+<script src="options.js"></script>
+</body>
+</html>
